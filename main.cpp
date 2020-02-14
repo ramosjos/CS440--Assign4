@@ -5,6 +5,7 @@
 #include <vector>
 #include <stdlib.h>
 #include <algorithm>
+#include <stdio.h>
 
 using namespace std;
 
@@ -138,6 +139,15 @@ void readRelationEmp(){
 			writeToTempEmp(runVector, runNumber);
 		}
 	
+	}
+}
+
+void deleteTempFiles(){
+	for(int i = 0; i < deptRunNumber; i++){
+		stringstream ss;
+		ss << i;
+		string tempFile = "Dept_runNumber_" + ss.str();
+		remove(tempFile.c_str());
 	}
 }
 
