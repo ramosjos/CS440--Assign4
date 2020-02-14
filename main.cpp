@@ -149,12 +149,21 @@ void deleteTempFiles(){
 		string tempFile = "Dept_runNumber_" + ss.str();
 		remove(tempFile.c_str());
 	}
+
+	for(int i = 0; i < empRunNumber; i++){
+		stringstream ss;
+		ss << i;
+		string tempFile = "Emp_runNumber_" + ss.str();
+		remove(tempFile.c_str());
+	}
 }
+
 
 
 int main(){
 	readRelationDept();	
 	readRelationEmp();	
-	cout << empRunNumber << endl << deptRunNumber << endl;
+	//cout << empRunNumber << endl << deptRunNumber << endl;
+	deleteTempFiles();
 	return 0;
 }
