@@ -72,6 +72,9 @@ void readRelation(){
 				runNumber++;
 			}
 		}
+		if(runVector.size() > 0){
+			writeToTemp(runVector, runNumber);
+		}
 	}
 }
 
