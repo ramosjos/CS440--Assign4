@@ -4,8 +4,7 @@
 #include <sstream>
 #include <vector>
 #include <stdlib.h>
-
-int runNumber = 0;
+#include <algorithm>
 
 using namespace std;
 
@@ -23,8 +22,25 @@ struct Emp {
 	double salary;
 };
 
+float sortByAttribute(const Dept &d1, const Dept &d2){
+	return d1.managerid < d2.managerid;
+} 
+
+void writeToTemp(vector<Dept> runVector, int runNumber){
+	stringstream ss;
+	ss << runNumber;
+	string tempFile = "Dept_runNumber_" + ss.str();
+	sort(runVector.begin(), runVector.end(), sortByAttribute);
+	ofstream outfile;
+	outfile.open(tempFile.c_str(), ios::out | ios::trunc);
+	for(int i = 0; i < runVector.size(); i++){
+		outfile << runVector[i].did << "," << runVector[i].dname << "," << runVector[i].budget << "," << runVector[i].managerid << endl;
+	}
+}
+
 void readRelation(){
 	int index = 0;
+	int runNumber = 0;
 	struct Dept deptStruct;
 	vector<Dept> runVector;
 	string line;	
@@ -48,8 +64,9 @@ void readRelation(){
 			deptStruct.budget = atof(holdTokens[2].c_str());
 			deptStruct.managerid = atoi(holdTokens[3].c_str());
 			runVector.push_back(deptStruct);
+
 			if(index % 22 == 0){
-				// call writeToFile();
+				writeToTemp(runVector, runNumber);
 				index = 0;
 				runVector.clear();
 				runNumber++;
@@ -57,12 +74,7 @@ void readRelation(){
 		}
 	}
 }
-/*
-   stringstream ss;
-   ss << runNumber;
-   string tempFile = fileName + "_runNumber_" + ss.str();
-   ofstream
-   */
+
 int main(){
 	readRelation();
 	return 0;
