@@ -172,6 +172,8 @@ void mergeAndJoin() {
 	struct Dept deptStruct;
 	string line;
 	string delimiter = ",";
+	ofstream outFile;
+	outFile.open("join.csv", ios::out | ios::trunc);
 	//outer loop
 	while(empTempFiles.size() > 0 && deptTempFiles.size() > 0) {
 
@@ -268,12 +270,28 @@ void mergeAndJoin() {
 		}
 		*/
 
+		if(empMergedVector.size() > 0 && deptMergedVector.size() > 0) {
+			//join
+			int i = 0;
+			int j = 0;
+			while(i < empMergedVector.size() && j < deptMergedVector.size()) {
+				//equal case
+				if(deptMergedVector[i].managerid == empMergedVector[j].eid) {
+					outFile << deptMergedVector[i].did << "," << deptMergedVector[i].dname << "," << deptMergedVector[i].budget << "," << deptMergedVector[i].managerid << "," << empMergedVector[j].eid << "," << empMergedVector[j].ename << "," << empMergedVector[j].age << "," << empMergedVector[j].salary << endl;
+				} else if (deptMergedVector[i].managerid > empMergedVector[j].eid) {
+					j++;
+				} else {
+					i++;
+				}
+			}
+		}
+
 		// clear emp/deptMergedVector after done joining
 		deptMergedVector.clear();
 		empMergedVector.clear();
 		index++;
-
 	}
+	outFile.close();
 }
 
 int main(){
