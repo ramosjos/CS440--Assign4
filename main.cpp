@@ -278,6 +278,8 @@ void mergeAndJoin() {
 				//equal case
 				if(deptMergedVector[i].managerid == empMergedVector[j].eid) {
 					outFile << deptMergedVector[i].did << "," << deptMergedVector[i].dname << "," << deptMergedVector[i].budget << "," << deptMergedVector[i].managerid << "," << empMergedVector[j].eid << "," << empMergedVector[j].ename << "," << empMergedVector[j].age << "," << empMergedVector[j].salary << endl;
+					i++;
+					j++;
 				} else if (deptMergedVector[i].managerid > empMergedVector[j].eid) {
 					j++;
 				} else {
