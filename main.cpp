@@ -9,6 +9,8 @@
 
 using namespace std;
 
+#define MAX_MEMORY_SIZE 22
+
 int deptRunNumber = 0;
 int empRunNumber = 0;
 
@@ -75,7 +77,7 @@ void readRelationDept(){
 			deptStruct.managerid = atoi(holdTokens[3].c_str());
 			runVector.push_back(deptStruct);
 
-			if(index % 22 == 0){
+			if(index % MAX_MEMORY_SIZE == 0){
 				writeToTempDept(runVector, runNumber);
 				index = 0;
 				runVector.clear();
@@ -134,7 +136,7 @@ void readRelationEmp(){
 			empStruct.salary = atof(holdTokens[3].c_str());
 			runVector.push_back(empStruct);
 
-			if(index % 22 == 0){
+			if(index % MAX_MEMORY_SIZE == 0){
 				writeToTempEmp(runVector, runNumber);
 				index = 0;
 				runVector.clear();
@@ -178,7 +180,7 @@ void mergeAndJoin() {
 	outFile.open("join.csv", ios::out | ios::trunc);
 	//outer loop
 	while(empTempFiles.size() > 0 && deptTempFiles.size() > 0) {
-		while(empMergedVector.size() <= 11  || empTempFiles.size() != 0) {
+		while(empTempFiles.size() != 0) {
 			//open each file from both relations
 			for(int i = 0; i < empTempFiles.size(); i++){
 				int j = -1;
@@ -220,7 +222,7 @@ void mergeAndJoin() {
 		}
 		sort(empMergedVector.begin(), empMergedVector.end(), sortByAttributeEmp);
 
-		while(deptMergedVector.size() <= 11 || deptTempFiles.size() != 0) {
+		while(deptTempFiles.size() != 0) {
 			//open each file from both relations
 			for(int i = 0; i < deptTempFiles.size(); i++){
 				int j = -1;
@@ -266,7 +268,7 @@ void mergeAndJoin() {
 			//join
 			int i = 0;
 			int j = 0;
-			while(i < empMergedVector.size() && j < deptMergedVector.size()) {
+			while(j < empMergedVector.size() && i < deptMergedVector.size()) {
 				//equal case
 				if(deptMergedVector[i].managerid == empMergedVector[j].eid) {
 					outFile << deptMergedVector[i].did << "," << deptMergedVector[i].dname << "," << deptMergedVector[i].budget << "," << deptMergedVector[i].managerid << "," << empMergedVector[j].eid << "," << empMergedVector[j].ename << "," << empMergedVector[j].age << "," << empMergedVector[j].salary << endl;
@@ -293,6 +295,6 @@ int main(){
 	readRelationEmp();
 	mergeAndJoin();
 	//cout << empRunNumber << endl << deptRunNumber << endl;
-	//deleteTempFiles();
+	deleteTempFiles();
 	return 0;
 }
