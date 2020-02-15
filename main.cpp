@@ -166,6 +166,8 @@ void deleteTempFiles(){
 
 void mergeAndJoin() {
 	int index = 0;
+	int empIndex = 0;
+	int deptIndex = 0;
 	vector<Dept> deptMergedVector;
 	vector<Emp> empMergedVector;
 	struct Emp empStruct;
@@ -176,99 +178,89 @@ void mergeAndJoin() {
 	outFile.open("join.csv", ios::out | ios::trunc);
 	//outer loop
 	while(empTempFiles.size() > 0 && deptTempFiles.size() > 0) {
+		while(empMergedVector.size() <= 11  || empTempFiles.size() != 0) {
+			//open each file from both relations
+			for(int i = 0; i < empTempFiles.size(); i++){
+				int j = -1;
+				// read the 'index' file line # from each and read into the vector
+				ifstream infile(empTempFiles[i].c_str());
+				if(infile.is_open()) {
+					while(j != empIndex) {
+						getline(infile, line);
+						j++;
+					}
+					// read the elements from line into a struct
+					if(!line.empty()) {
 
-		//open each file from both relations
-		for(int i = 0; i < empTempFiles.size(); i++){
-			int j = -1;
-			// read the 'index' file line # from each and read into the vector
-			ifstream infile(empTempFiles[i].c_str());
-			if(infile.is_open()) {
-				while(j != index) {
-					getline(infile, line);
-					j++;
-				}
-				// read the elements from line into a struct
-				if(!line.empty()) {
-
-					vector<string> holdTokens;
-					size_t pos = 0;
-					string token;
-					while ((pos = line.find(delimiter)) != std::string::npos) {
+						vector<string> holdTokens;
+						size_t pos = 0;
+						string token;
+						while ((pos = line.find(delimiter)) != std::string::npos) {
+							token = line.substr(0, pos);
+							holdTokens.push_back(token);
+							line.erase(0, pos + delimiter.length());
+						}
 						token = line.substr(0, pos);
 						holdTokens.push_back(token);
-						line.erase(0, pos + delimiter.length());
-					}
-					token = line.substr(0, pos);
-					holdTokens.push_back(token);
-					line = "";
-					empStruct.eid = atoi(holdTokens[0].c_str());
-					empStruct.ename = holdTokens[1];
-					empStruct.age = atoi(holdTokens[2].c_str());
-					empStruct.salary = atof(holdTokens[3].c_str());
-					empMergedVector.push_back(empStruct);
+						line = "";
+						empStruct.eid = atoi(holdTokens[0].c_str());
+						empStruct.ename = holdTokens[1];
+						empStruct.age = atoi(holdTokens[2].c_str());
+						empStruct.salary = atof(holdTokens[3].c_str());
+						empMergedVector.push_back(empStruct);
 
-				} else {
-					// delete this entry from empTempFiles
-					empTempFiles.erase(empTempFiles.begin() + i);
+					} else {
+						// delete this entry from empTempFiles
+						empTempFiles.erase(empTempFiles.begin() + i);
+					}
+					infile.close();
 				}
-				infile.close();
 			}
+			empIndex++;
 		}
 		sort(empMergedVector.begin(), empMergedVector.end(), sortByAttributeEmp);
 
+		while(deptMergedVector.size() <= 11 || deptTempFiles.size() != 0) {
+			//open each file from both relations
+			for(int i = 0; i < deptTempFiles.size(); i++){
+				int j = -1;
+				// read the 'index' file line # from each and read into the vector
+				ifstream infile(deptTempFiles[i].c_str());
+				if(infile.is_open()) {
+					while(j != deptIndex) {
+						getline(infile, line);
+						j++;
+					}
+					// read the elements from line into a struct
+					if(!line.empty()) {
 
-		//open each file from both relations
-		for(int i = 0; i < deptTempFiles.size(); i++){
-			int j = -1;
-			// read the 'index' file line # from each and read into the vector
-			ifstream infile(deptTempFiles[i].c_str());
-			if(infile.is_open()) {
-				while(j != index) {
-					getline(infile, line);
-					j++;
-				}
-				// read the elements from line into a struct
-				if(!line.empty()) {
-
-					vector<string> holdTokens;
-					size_t pos = 0;
-					string token;
-					while ((pos = line.find(delimiter)) != std::string::npos) {
+						vector<string> holdTokens;
+						size_t pos = 0;
+						string token;
+						while ((pos = line.find(delimiter)) != std::string::npos) {
+							token = line.substr(0, pos);
+							holdTokens.push_back(token);
+							line.erase(0, pos + delimiter.length());
+						}
 						token = line.substr(0, pos);
 						holdTokens.push_back(token);
-						line.erase(0, pos + delimiter.length());
-					}
-					token = line.substr(0, pos);
-					holdTokens.push_back(token);
-					line = "";
-					deptStruct.did = atoi(holdTokens[0].c_str());
-					deptStruct.dname = holdTokens[1];
-					deptStruct.budget = atof(holdTokens[2].c_str());
-					deptStruct.managerid = atoi(holdTokens[3].c_str());
-					deptMergedVector.push_back(deptStruct);
+						line = "";
+						deptStruct.did = atoi(holdTokens[0].c_str());
+						deptStruct.dname = holdTokens[1];
+						deptStruct.budget = atof(holdTokens[2].c_str());
+						deptStruct.managerid = atoi(holdTokens[3].c_str());
+						deptMergedVector.push_back(deptStruct);
 
-				} else {
-					// delete this entry from empTempFiles
-					deptTempFiles.erase(deptTempFiles.begin() + i);
+					} else {
+						// delete this entry from empTempFiles
+						deptTempFiles.erase(deptTempFiles.begin() + i);
+					}
+					infile.close();
 				}
-				infile.close();
 			}
+			deptIndex++;
 		}
 		sort(deptMergedVector.begin(), deptMergedVector.end(), sortByAttributeDept);
-
-		/*
-		cout << "emp: " << endl;
-		for(int i = 0; i < empMergedVector.size(); i++) {
-			cout << empMergedVector[i].eid << "," << empMergedVector[i].ename << "," << empMergedVector[i].age << "," << empMergedVector[i].salary << endl;
-		}
-		*/
-
-		/*
-		cout << "dept: " << endl;
-		for(int i = 0; i < deptMergedVector.size(); i++) {
-			cout << deptMergedVector[i].did << "," << deptMergedVector[i].dname << "," << deptMergedVector[i].budget << "," << deptMergedVector[i].managerid << endl;
-		}
-		*/
 
 		if(empMergedVector.size() > 0 && deptMergedVector.size() > 0) {
 			//join
